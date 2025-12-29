@@ -1,4 +1,4 @@
-name: Backend Deploy (Azure Functions)
+name: Build and deploy backend (Azure Functions)
 
 on:
   push:
@@ -17,5 +17,19 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
-      - name: NOTE
-        run: echo "Add Azure Functions deploy step and configure credentials (use publish profile or service principal)"
+      - name: Login to Azure
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} # JSON from `az ad sp create-for-rbac --sdk-auth`
+      - name: Deploy to Azure Functions (using publish profile)
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ secrets.AZURE_FUNCTION_APP_NAME }} # set your Function App name as a secret
+          package: './backend'
+          publish-profile: ${{ secrets.FUNCTIONS_PUBLISH_PROFILE }} # alternative to using AZURE_CREDENTIALS
+
+# Notes:
+# - You can set up deployment either with a Service Principal (AZURE_CREDENTIALS) or with a publish profile (FUNCTIONS_PUBLISH_PROFILE). Configure one of them as a repo secret.
+# - Obtain a publish profile from the Azure Portal (Function App -> Get publish profile) and add it to repo secrets.
+# - Set AZURE_FUNCTION_APP_NAME as a repo secret with the name of your Function App.
+
