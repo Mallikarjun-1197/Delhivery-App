@@ -11,6 +11,9 @@ param repositoryUrl string = ''
 resource staticApp 'Microsoft.Web/staticSites@2022-03-01' = {
   name: staticWebAppName
   location: location
+  sku: {
+    name: 'Free'
+  }
   properties: {
     repositoryUrl: repositoryUrl
     // buildProperties and branch can be set by the GitHub Action during deploy
