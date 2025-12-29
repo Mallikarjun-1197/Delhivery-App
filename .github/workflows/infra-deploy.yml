@@ -10,7 +10,7 @@ on:
       location:
         description: 'Azure location'
         required: true
-        default: 'eastus'
+        default: 'eastus2'
   push:
     branches: [ main ]
 
