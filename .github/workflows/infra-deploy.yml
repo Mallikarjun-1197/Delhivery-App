@@ -1,0 +1,47 @@
+name: Infra Deploy (Bicep)
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        description: 'Resource group to deploy into'
+        required: true
+        default: 'delhivery-rg'
+      location:
+        description: 'Azure location'
+        required: true
+        default: 'eastus'
+  push:
+    branches: [ main ]
+
+env:
+  BICEP_FILE: 'bicep/main.bicep'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Ensure resource group exists
+        run: |
+          az group create --name ${{ github.event.inputs.resource_group || 'delhivery-rg' }} --location ${{ github.event.inputs.location || 'eastus' }}
+
+      - name: Deploy Bicep template
+        run: |
+          az deployment group create \
+            --resource-group ${{ github.event.inputs.resource_group || 'delhivery-rg' }} \
+            --template-file $BICEP_FILE \
+            --parameters postgresAdminPassword="${{ secrets.POSTGRES_ADMIN_PASSWORD }}" \
+            --parameters staticWebAppName="delhivery-static" \
+            --parameters functionAppName="delhivery-func" \
+            --parameters location="${{ github.event.inputs.location || 'eastus' }}"
+
+      - name: Output deployment info
+        run: |
+          echo "Deployment complete. Check resources in the Azure Portal or use 'az group deployment show' to review outputs."
