@@ -22,11 +22,16 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }} # JSON from `az ad sp create-for-rbac --sdk-auth`
       - name: Deploy to Azure Functions (using publish profile)
+        if: ${{ secrets.AZURE_FUNCTION_APP_NAME }}
         uses: Azure/functions-action@v1
         with:
           app-name: ${{ secrets.AZURE_FUNCTION_APP_NAME }} # set your Function App name as a secret
           package: './backend'
           publish-profile: ${{ secrets.FUNCTIONS_PUBLISH_PROFILE }} # alternative to using AZURE_CREDENTIALS
+
+      - name: Skip Function App deploy (no AZURE_FUNCTION_APP_NAME)
+        if: ${{ !secrets.AZURE_FUNCTION_APP_NAME }}
+        run: echo "AZURE_FUNCTION_APP_NAME not set; skipping Function App deployment. Using Static Web Apps integrated functions instead."
 
 # Notes:
 # - You can set up deployment either with a Service Principal (AZURE_CREDENTIALS) or with a publish profile (FUNCTIONS_PUBLISH_PROFILE). Configure one of them as a repo secret.
