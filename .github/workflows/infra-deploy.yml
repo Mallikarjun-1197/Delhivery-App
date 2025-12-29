@@ -39,7 +39,6 @@ jobs:
             --template-file $BICEP_FILE \
             --parameters postgresAdminPassword="${{ secrets.POSTGRES_ADMIN_PASSWORD }}" \
             --parameters staticWebAppName="delhivery-static" \
-            --parameters functionAppName="delhivery-func" \
             --parameters location="${{ github.event.inputs.location || 'eastus' }}"
 
       - name: Output deployment info

@@ -28,7 +28,8 @@ resource postgresServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
 }
 
 resource postgresDatabase 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2022-12-01' = {
-  name: '${postgresServer.name}/${dbName}'
+  parent: postgresServer
+  name: dbName
   properties: {}
 }
 
