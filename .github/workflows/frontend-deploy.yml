@@ -1,0 +1,26 @@
+name: Frontend Deploy (Static Web Apps)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install
+        run: |
+          cd frontend
+          npm install
+      - name: Build
+        run: |
+          cd frontend
+          npm run build
+      # Add deployment action for Azure Static Web Apps here
+      - name: NOTE
+        run: echo "Add your Azure Static Web Apps deployment action and configure secrets"

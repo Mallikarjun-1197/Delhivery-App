@@ -1,0 +1,6 @@
+Ability to select Pick Up and Delivery Addresses.
+Ability to select packaging content like Box/Carton
+Ability to choose weight of package
+Ability to choose package
+Ability to add package value
+Ability to choose the pick up date
