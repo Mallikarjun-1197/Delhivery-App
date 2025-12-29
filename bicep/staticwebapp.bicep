@@ -6,15 +6,14 @@ This module creates a minimal Static Web App resource; you may prefer to create 
 
 param location string
 param staticWebAppName string
+param repositoryUrl string = ''
 
 resource staticApp 'Microsoft.Web/staticSites@2022-03-01' = {
   name: staticWebAppName
   location: location
   properties: {
-    sku: {
-      name: 'Free'
-      tier: 'Free'
-    }
+    repositoryUrl: repositoryUrl
+    // buildProperties and branch can be set by the GitHub Action during deploy
   }
 }
 

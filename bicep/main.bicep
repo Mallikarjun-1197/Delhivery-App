@@ -23,9 +23,6 @@ param postgresDbName string = 'delhiverydb'
 @description('Name for the Static Web App')
 param staticWebAppName string = '${projectPrefix}-static'
 
-@description('Name for the Function App')
-param functionAppName string = '${projectPrefix}-func'
-
 module postgres './postgres.bicep' = {
   name: 'postgresModule'
   params: {
@@ -37,23 +34,15 @@ module postgres './postgres.bicep' = {
   }
 }
 
-module functionApp './functionapp.bicep' = {
-  name: 'functionModule'
-  params: {
-    location: location
-    functionAppName: functionAppName
-    storageAccountName: toLower('${projectPrefix}st${uniqueString(resourceGroup().id)}')
-  }
-}
-
+// Use Static Web App (with integrated Functions) instead of a separate Function App to keep costs low.
 module staticApp './staticwebapp.bicep' = {
   name: 'staticModule'
   params: {
     location: location
     staticWebAppName: staticWebAppName
+    repositoryUrl: 'https://github.com/Mallikarjun-1197/Delhivery-App'
   }
 }
 
 output postgresHost string = postgres.outputs.host
-output functionAppName string = functionApp.outputs.functionAppName
 output staticWebAppName string = staticApp.outputs.staticWebAppName

@@ -28,7 +28,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }} # optional, used for PR comments
           action: "upload"
           app_location: "frontend"
-          api_location: "" # keep empty because API is deployed separately as Azure Functions
+          api_location: "api" # deploy functions from the `api` folder (Azure Functions Python)
           app_artifact_location: "frontend/dist"
 
 # Notes:
