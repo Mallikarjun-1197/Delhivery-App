@@ -44,21 +44,6 @@ resource functionStorage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   properties: {}
 }
 
-// ==========================
-// App Service Plan
-// ==========================
-resource functionPlan 'Microsoft.Web/serverfarms@2022-03-01' = {
-  name: '${functionAppName}-plan'
-  location: location
-  sku: {
-    name: 'S1'
-    tier: 'Standard'
-    capacity: 1 
-  }
-  properties: {
-    reserved: true // Linux
-  }
-}
 
 // ==========================
 // PostgreSQL Server
@@ -102,7 +87,6 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   location: location
   kind: 'functionapp,linux'
   properties: {
-    serverFarmId: functionPlan.id
     httpsOnly: true
     siteConfig: {
       linuxFxVersion: 'Python|3.11'
