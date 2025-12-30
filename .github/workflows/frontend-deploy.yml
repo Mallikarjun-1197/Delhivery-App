@@ -34,6 +34,14 @@ jobs:
           echo "Found files (top 20):" 
           find frontend/dist -type f | head -n 20 || true
           du -sh frontend/dist || true
+      - name: Verify API functions structure
+        run: |
+          echo "Checking API folder structure..."
+          ls -la api || true
+          echo "API functions found:"
+          find api -name "function.json" -type f || true
+          echo "API requirements.txt:"
+          cat api/requirements.txt || true
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
