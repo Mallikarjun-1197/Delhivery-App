@@ -48,12 +48,12 @@ resource functionStorage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 // ==========================
 // PostgreSQL Server
 // ==========================
-resource postgres 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
-  name: 'postgresModule'
+resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01' = {
+  name: postgresServerName
   location: location
   sku: {
-    name: 'B_Gen5_1'
-    tier: 'Basic'
+    name: 'B_Standard_B1ms'
+    tier: 'Burstable'
     capacity: 1
     family: 'Gen5'
   }
@@ -61,11 +61,18 @@ resource postgres 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
     administratorLogin: postgresAdmin
     administratorLoginPassword: postgresAdminPassword
     version: '14'
-    sslEnforcement: 'Enabled'
-    storageProfile: {
-      storageMB: 5120
+    storage: {
+      storageSizeGB: 32
+    }
+    highAvailability: {
+      mode: 'Disabled'
+    }
+    backup: {
       backupRetentionDays: 7
       geoRedundantBackup: 'Disabled'
+    }
+    network: {
+      publicNetworkAccess: 'Enabled'
     }
   }
 }
