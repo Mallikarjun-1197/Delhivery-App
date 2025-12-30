@@ -27,9 +27,6 @@ param postgresDbName string = 'delhiverydb'
 @description('Name for the PostgreSQL server')
 param postgresServerName string = '${projectPrefix}-pg-flex'
 
-@description('Name for the Static Web App')
-param staticWebAppName string = '${projectPrefix}-static'
-
 @description('Name for the Azure Function App')
 param functionAppName string = '${projectPrefix}-api-func'
 
