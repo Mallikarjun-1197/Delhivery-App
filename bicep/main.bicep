@@ -50,7 +50,7 @@ resource functionStorage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 // ==========================
 // PostgreSQL Flexible Server
 // ==========================
-resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01' = {
+resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2025-08-01' = {
   name: postgresServerName
   location: location
   sku: {
@@ -82,7 +82,7 @@ resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01' = {
 // ==========================
 // PostgreSQL Database
 // ==========================
-resource postgresDb 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2023-03-01' = {
+resource postgresDb 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2025-08-01' = {
   name: '${postgres.name}/${postgresDbName}' // <server>/<database>
   properties: {}
   dependsOn: [
