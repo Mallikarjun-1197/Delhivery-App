@@ -26,6 +26,28 @@ jobs:
         run: |
           cd frontend
           npm run build
+      - name: Verify PostCSS config exists
+        run: |
+          echo "Checking PostCSS config..."
+          ls -la frontend/postcss.config.cjs || echo "PostCSS config not found!"
+          cat frontend/postcss.config.cjs || true
+      - name: Verify CSS was processed (check for Tailwind classes)
+        run: |
+          echo "Checking if CSS contains Tailwind classes..."
+          CSS_FILE=$(find frontend/dist/assets -name "*.css" | head -n 1)
+          if [ -f "$CSS_FILE" ]; then
+            echo "Found CSS file: $CSS_FILE"
+            if grep -q "@tailwind" "$CSS_FILE"; then
+              echo "❌ ERROR: CSS still contains @tailwind directives - PostCSS not processing!"
+              head -n 5 "$CSS_FILE"
+              exit 1
+            else
+              echo "✅ CSS processed correctly - Tailwind classes found"
+              head -n 5 "$CSS_FILE"
+            fi
+          else
+            echo "⚠️  No CSS file found in dist/assets"
+          fi
       - name: Verify build output
         run: |
           echo "Listing frontend output directory"
