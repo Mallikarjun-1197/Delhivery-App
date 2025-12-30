@@ -3,3 +3,5 @@ uvicorn[standard]
 sqlmodel
 pydantic
 python-dotenv
+azure-functions
+

@@ -41,7 +41,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }} # optional, used for PR comments
           action: "upload"
           app_location: "frontend"
-          api_location: "api" # deploy functions from the `api` folder (Azure Functions Python)
+          output_location: "dist"
           app_artifact_location: "frontend/dist"
 
 # Notes:
