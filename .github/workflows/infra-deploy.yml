@@ -28,9 +28,18 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Ensure resource group exists
+      - name: Ensure resource group exists (create if missing)
         run: |
-          az group create --name ${{ github.event.inputs.resource_group || 'delhivery-rg' }} --location ${{ github.event.inputs.location || 'eastus2' }}
+          RG=${{ github.event.inputs.resource_group || 'delhivery-rg' }}
+          LOCATION=${{ github.event.inputs.location || 'eastus2' }}
+          echo "Checking resource group '$RG'..."
+          if az group show --name "$RG" >/dev/null 2>&1; then
+            EXISTING_LOC=$(az group show --name "$RG" --query location -o tsv)
+            echo "Resource group '$RG' exists in location '$EXISTING_LOC'. Will deploy resources to '$LOCATION' (resource group location is immutable)."
+          else
+            echo "Creating resource group '$RG' in location '$LOCATION'..."
+            az group create --name "$RG" --location "$LOCATION"
+          fi
 
       - name: Deploy Bicep template
         run: |
