@@ -48,7 +48,7 @@ resource functionStorage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 // ==========================
 // PostgreSQL Server
 // ==========================
-resource postgres 'Microsoft.DBforPostgreSQL/servers@2022-12-01' = {
+resource postgres 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
   name: 'postgresModule'
   location: location
   sku: {
@@ -82,7 +82,7 @@ resource postgresDb 'Microsoft.DBforPostgreSQL/servers/databases@2022-12-01' = {
 // ==========================
 // Function App
 // ==========================
-resource functionApp 'Microsoft.Web/sites@2017-12-01' = {
+resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   name: functionAppName
   location: location
   kind: 'functionapp,linux'
