@@ -51,8 +51,9 @@ resource functionPlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: '${functionAppName}-plan'
   location: location
   sku: {
-    name: 'Y1'
-    tier: 'Dynamic'
+    name: 'S1'
+    tier: 'Standard'
+    capacity: 1 
   }
   properties: {
     reserved: true // Linux
