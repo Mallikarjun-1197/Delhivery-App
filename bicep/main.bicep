@@ -82,7 +82,7 @@ resource postgresDb 'Microsoft.DBforPostgreSQL/servers/databases@2022-12-01' = {
 // ==========================
 // Function App
 // ==========================
-resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
+resource functionApp 'Microsoft.Web/sites@2017-12-01' = {
   name: functionAppName
   location: location
   kind: 'functionapp,linux'
