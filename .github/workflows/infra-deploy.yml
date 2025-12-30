@@ -18,7 +18,7 @@ env:
   RESOURCE_GROUP: ${{ github.event.inputs.resource_group || 'delhivery-rg' }}
   LOCATION: ${{ github.event.inputs.location || 'eastus2' }}
   BICEP_FILE: 'bicep/main.bicep'
-  FUNCTION_APP_NAME: 'delhivery-api-func'
+  FUNCTION_APP_NAME: ${{ secrets.AZURE_FUNCTION_APP_NAME }}
   STATIC_WEB_APP_NAME: 'delhivery-static'
 
 jobs:
