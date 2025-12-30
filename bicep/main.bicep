@@ -1,7 +1,7 @@
 /*
-Main Bicep template for Delhivery App
+Delhivery App Main Bicep Template
 - PostgreSQL Flexible Server
-- Azure Function App (Consumption plan – lowest cost)
+- Azure Function App (Consumption plan – serverless)
 - Azure Static Web App (frontend only)
 */
 
@@ -21,21 +21,13 @@ param postgresAdminPassword string
 @description('Postgres database name')
 param postgresDbName string = 'delhiverydb'
 
-@description('Name for the PostgreSQL server')
-param postgresServerName string = '${projectPrefix}-pg-flex'
-
-@description('Name for the Static Web App')
-param staticWebAppName string = '${projectPrefix}-static'
-
 @description('Name for the Azure Function App')
 param functionAppName string = '${projectPrefix}-api-func'
 
 // ==========================
-// Storage Account
+// Storage Account for Function App
 // ==========================
-var storageAccountName = toLower(
-  replace('${projectPrefix}${uniqueString(resourceGroup().id)}', '-', '')
-)
+var storageAccountName = toLower(replace('${projectPrefix}${uniqueString(resourceGroup().id)}', '-', ''))
 
 resource functionStorage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
@@ -50,11 +42,13 @@ resource functionStorage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 // ==========================
 // PostgreSQL Flexible Server
 // ==========================
-resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2025-08-01' = {
+var postgresServerName = '${projectPrefix}-postgres'
+
+resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01' = {
   name: postgresServerName
   location: location
   sku: {
-    name: 'Standard_B1ms'
+    name: 'Standard_B1ms'   // ✅ valid SKU
     tier: 'Burstable'
     capacity: 1
     family: 'Gen5'
@@ -82,8 +76,8 @@ resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2025-08-01' = {
 // ==========================
 // PostgreSQL Database
 // ==========================
-resource postgresDb 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2025-08-01' = {
-  name: '${postgres.name}/${postgresDbName}' // <server>/<database>
+resource postgresDb 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2023-03-01' = {
+  name: '${postgres.name}/${postgresDbName}'
   properties: {}
   dependsOn: [
     postgres
@@ -91,7 +85,7 @@ resource postgresDb 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2025-08
 }
 
 // ==========================
-// Function App (Consumption Plan)
+// Azure Function App (Linux, Python 3.11, Consumption)
 // ==========================
 resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   name: functionAppName
@@ -100,11 +94,11 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   properties: {
     httpsOnly: true
     siteConfig: {
-      linuxFxVersion: 'Python|3.10'
+      linuxFxVersion: 'Python|3.11'  // ✅ valid in your region
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${functionStorage.name};AccountKey=${functionStorage.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${functionStorage.name};AccountKey=${listKeys(functionStorage.id, functionStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
         }
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
