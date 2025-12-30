@@ -83,4 +83,63 @@ resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2023-03-01' = {
 // PostgreSQL Database
 // ==========================
 resource postgresDb 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2023-03-01' = {
-  name: '${postgres.name}/${po
+  name: '${postgres.name}/${postgresDbName}' // <server>/<database>
+  properties: {}
+  dependsOn: [
+    postgres
+  ]
+}
+
+// ==========================
+// Function App (Consumption Plan)
+// ==========================
+resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
+  name: functionAppName
+  location: location
+  kind: 'functionapp,linux'
+  properties: {
+    httpsOnly: true
+    siteConfig: {
+      linuxFxVersion: 'Python|3.11'
+      appSettings: [
+        {
+          name: 'AzureWebJobsStorage'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${functionStorage.name};AccountKey=${functionStorage.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+        }
+        {
+          name: 'FUNCTIONS_WORKER_RUNTIME'
+          value: 'python'
+        }
+        {
+          name: 'FUNCTIONS_EXTENSION_VERSION'
+          value: '~4'
+        }
+        {
+          name: 'WEBSITE_RUN_FROM_PACKAGE'
+          value: '1'
+        }
+        {
+          name: 'POSTGRES_HOST'
+          value: postgres.properties.fullyQualifiedDomainName
+        }
+        {
+          name: 'POSTGRES_DB'
+          value: postgresDbName
+        }
+        {
+          name: 'POSTGRES_USER'
+          value: postgresAdmin
+        }
+        {
+          name: 'POSTGRES_PASSWORD'
+          value: postgresAdminPassword
+        }
+      ]
+    }
+  }
+  dependsOn: [
+    functionStorage
+    postgres
+    postgresDb
+  ]
+}
