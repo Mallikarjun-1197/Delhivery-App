@@ -46,8 +46,13 @@ module postgres './postgres.bicep' = {
 --------------------------*/
 
 /* Storage Account (required by Functions) */
+
+var storageAccountName = toLower(
+  replace('${projectPrefix}${uniqueString(resourceGroup().id)}', '-', '')
+)
+
 resource functionStorage 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: toLower('${functionAppName}sa')
+  name: storageAccountName
   location: location
   sku: {
     name: 'Standard_LRS'
