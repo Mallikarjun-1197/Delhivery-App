@@ -127,7 +127,6 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
     }
   }
   dependsOn: [
-    functionPlan
     functionStorage
     postgres
     postgresDb
