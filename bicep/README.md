@@ -11,10 +11,10 @@ Included:
 
 Quick deploy (example):
 1. Create resource group:
-   az group create -n delhivery-rg -l eastus
+   az group create -n delhivery-rg -l eastus2
 
 2. Deploy the Bicep template (supply secure password as parameter or via KeyVault reference):
-   az deployment group create --resource-group delhivery-rg --template-file bicep/main.bicep --parameters postgresAdminPassword="<YOUR_PASSWORD>" staticWebAppName="delhivery-static" functionAppName="delhivery-func" location="eastus"
+   az deployment group create --resource-group delhivery-rg --template-file bicep/main.bicep --parameters postgresAdminPassword="<YOUR_PASSWORD>" staticWebAppName="delhivery-static" functionAppName="delhivery-func" location="eastus2"
 
 Notes & next actions:
 - These templates are starter examples and may require adjustments (networking, sku sizes, firewall rules, backups, private endpoint, high availability) before production use.

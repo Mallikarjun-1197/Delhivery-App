@@ -30,7 +30,7 @@ jobs:
 
       - name: Ensure resource group exists
         run: |
-          az group create --name ${{ github.event.inputs.resource_group || 'delhivery-rg' }} --location ${{ github.event.inputs.location || 'eastus' }}
+          az group create --name ${{ github.event.inputs.resource_group || 'delhivery-rg' }} --location ${{ github.event.inputs.location || 'eastus2' }}
 
       - name: Deploy Bicep template
         run: |
@@ -39,7 +39,7 @@ jobs:
             --template-file $BICEP_FILE \
             --parameters postgresAdminPassword="${{ secrets.POSTGRES_ADMIN_PASSWORD }}" \
             --parameters staticWebAppName="delhivery-static" \
-            --parameters location="${{ github.event.inputs.location || 'eastus' }}"
+            --parameters location="${{ github.event.inputs.location || 'eastus2' }}"
 
       - name: Output deployment info
         run: |

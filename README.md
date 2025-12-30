@@ -34,7 +34,7 @@ Quick steps to create necessary Azure credentials and secrets:
 1. Login to Azure locally:
    - az login
 2. Create resource group (optional; the workflow can create it):
-   - az group create -n delhivery-rg -l eastus
+   - az group create -n delhivery-rg -l eastus2
 3. Create a service principal (recommended for CI):
    - az ad sp create-for-rbac --name "delhivery-sp" --role contributor --scopes /subscriptions/<SUB_ID>/resourceGroups/delhivery-rg --sdk-auth
    - Copy the JSON output and add it to the repo secret `AZURE_CREDENTIALS` (in GitHub: Settings → Secrets → Actions).
