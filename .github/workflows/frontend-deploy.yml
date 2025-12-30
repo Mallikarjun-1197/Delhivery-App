@@ -26,6 +26,14 @@ jobs:
         run: |
           cd frontend
           npm run build
+      - name: Verify build output
+        run: |
+          echo "Listing frontend output directory"
+          ls -la frontend || true
+          ls -la frontend/dist || true
+          echo "Found files (top 20):" 
+          find frontend/dist -type f | head -n 20 || true
+          du -sh frontend/dist || true
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -34,7 +42,7 @@ jobs:
           action: "upload"
           app_location: "frontend"
           api_location: "api" # deploy functions from the `api` folder (Azure Functions Python)
-          app_artifact_location: "frontend/dist"
+          app_artifact_location: "dist"
 
 # Notes:
 # - Create an Azure Static Web App resource in the Azure portal and add the generated deployment token to this repo's secrets as AZURE_STATIC_WEB_APPS_API_TOKEN.
