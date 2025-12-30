@@ -4,6 +4,8 @@ Delhivery App Main Bicep Template
 - Azure Function App (Consumption plan – serverless)
 - Azure Static Web App (frontend only)
 */
+@description('Name for the Static Web App')
+param staticWebAppName string = '${projectPrefix}-static'
 
 @description('Location for all resources')
 param location string = resourceGroup().location
@@ -131,6 +133,19 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
       ]
     }
   }
+/* -------------------------
+   Static Web App (frontend only)
+--------------------------*/
+module staticApp './staticwebapp.bicep' = {
+  name: 'staticModule'
+  params: {
+    location: location
+    staticWebAppName: staticWebAppName
+    repositoryUrl: 'https://github.com/Mallikarjun-1197/Delhivery-App'
+  }
+}
+
+
   dependsOn: [
     functionStorage
     postgres
