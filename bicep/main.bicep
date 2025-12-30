@@ -63,7 +63,7 @@ resource functionPlan 'Microsoft.Web/serverfarms@2022-03-01' = {
 // PostgreSQL Server
 // ==========================
 resource postgres 'Microsoft.DBforPostgreSQL/servers@2022-12-01' = {
-  name: postgresServerName
+  name: 'postgresModule'
   location: location
   sku: {
     name: 'B_Gen5_1'
@@ -108,7 +108,7 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${functionStorage.name};AccountKey=${listKeys(functionStorage.id, functionStorage.apiVersion).keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${functionStorage.name};AccountKey=${functionStorage.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
         }
         {
           name: 'FUNCTIONS_WORKER_RUNTIME'
