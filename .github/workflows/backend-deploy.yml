@@ -7,6 +7,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      HAS_APP_NAME: ${{ secrets.AZURE_FUNCTION_APP_NAME }}
+      HAS_PUBLISH_PROFILE: ${{ secrets.FUNCTIONS_PUBLISH_PROFILE }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -16,21 +19,21 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r backend/requirements.txt
+          pip install -r api/requirements.txt
       - name: Login to Azure
-        uses: Azure/login@v1
+        uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }} # JSON from `az ad sp create-for-rbac --sdk-auth`
       - name: Deploy to Azure Functions (using publish profile)
-        if: ${{ secrets.AZURE_FUNCTION_APP_NAME }}
-        uses: Azure/functions-action@v1
+        if: ${{ env.HAS_APP_NAME != '' && env.HAS_PUBLISH_PROFILE != '' }}
+        uses: azure/functions-action@v1
         with:
           app-name: ${{ secrets.AZURE_FUNCTION_APP_NAME }} # set your Function App name as a secret
-          package: './backend'
+          package: './api'
           publish-profile: ${{ secrets.FUNCTIONS_PUBLISH_PROFILE }} # alternative to using AZURE_CREDENTIALS
 
       - name: Skip Function App deploy (no AZURE_FUNCTION_APP_NAME)
-        if: ${{ !secrets.AZURE_FUNCTION_APP_NAME }}
+        if: ${{ env.HAS_APP_NAME == '' || env.HAS_PUBLISH_PROFILE == '' }}
         run: echo "AZURE_FUNCTION_APP_NAME not set; skipping Function App deployment. Using Static Web Apps integrated functions instead."
 
 # Notes:

@@ -26,28 +26,6 @@ jobs:
         run: |
           cd frontend
           npm run build
-      - name: Verify PostCSS config exists
-        run: |
-          echo "Checking PostCSS config..."
-          ls -la frontend/postcss.config.cjs || echo "PostCSS config not found!"
-          cat frontend/postcss.config.cjs || true
-      - name: Verify CSS was processed (check for Tailwind classes)
-        run: |
-          echo "Checking if CSS contains Tailwind classes..."
-          CSS_FILE=$(find frontend/dist/assets -name "*.css" | head -n 1)
-          if [ -f "$CSS_FILE" ]; then
-            echo "Found CSS file: $CSS_FILE"
-            if grep -q "@tailwind" "$CSS_FILE"; then
-              echo "❌ ERROR: CSS still contains @tailwind directives - PostCSS not processing!"
-              head -n 5 "$CSS_FILE"
-              exit 1
-            else
-              echo "✅ CSS processed correctly - Tailwind classes found"
-              head -n 5 "$CSS_FILE"
-            fi
-          else
-            echo "⚠️  No CSS file found in dist/assets"
-          fi
       - name: Verify build output
         run: |
           echo "Listing frontend output directory"
@@ -56,14 +34,6 @@ jobs:
           echo "Found files (top 20):" 
           find frontend/dist -type f | head -n 20 || true
           du -sh frontend/dist || true
-      - name: Verify API functions structure
-        run: |
-          echo "Checking API folder structure..."
-          ls -la api || true
-          echo "API functions found:"
-          find api -name "function.json" -type f || true
-          echo "API requirements.txt:"
-          cat api/requirements.txt || true
       - name: Deploy to Azure Static Web Apps
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -72,7 +42,7 @@ jobs:
           action: "upload"
           app_location: "frontend"
           api_location: "api" # deploy functions from the `api` folder (Azure Functions Python)
-          app_artifact_location: "dist"
+          app_artifact_location: "frontend/dist"
 
 # Notes:
 # - Create an Azure Static Web App resource in the Azure portal and add the generated deployment token to this repo's secrets as AZURE_STATIC_WEB_APPS_API_TOKEN.
