@@ -99,6 +99,7 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
   location: location
   kind: 'functionapp,linux'
   properties: {
+    reserved: true
     httpsOnly: true
     siteConfig: {
       appSettings: [
