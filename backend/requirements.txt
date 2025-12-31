@@ -4,4 +4,3 @@ sqlmodel
 pydantic
 python-dotenv
 azure-functions
-
