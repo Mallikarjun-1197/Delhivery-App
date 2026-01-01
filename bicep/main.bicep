@@ -120,10 +120,6 @@ resource functionApp 'Microsoft.Web/sites@2022-03-01' = {
           value: 'EnableWorkerIndexing'
         }
         {
-          name: 'WEBSITE_RUN_FROM_PACKAGE'
-          value: '1'
-        }
-        {
           name: 'POSTGRES_HOST'
           value: postgres.properties.fullyQualifiedDomainName
         }
